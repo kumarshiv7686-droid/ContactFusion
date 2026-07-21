@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+venv/
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# Output folders
+output/
+uploads/
+logs/
+
+# Database
+*.duckdb
+*.db
+*.sqlite3
+
+# Windows
+Thumbs.db

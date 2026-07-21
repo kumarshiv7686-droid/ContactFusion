@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>ContactFusion v1.0</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+<div class="container py-5">
+
+    <div class="card shadow-lg">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3 class="mb-0">
+                📞 ContactFusion v1.0
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <button
+                        class="btn btn-primary w-100 mb-2"
+                        id="chooseBtn">
+
+                        Select Files
+
+                    </button>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <button
+                        class="btn btn-success w-100 mb-2"
+                        id="folderBtn">
+
+                        Select Folder
+
+                    </button>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <button
+                        class="btn btn-warning w-100 mb-2"
+                        id="zipBtn">
+
+                        Select ZIP
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <input
+                type="file"
+                id="fileInput"
+                multiple
+                hidden>
+
+            <input
+                type="file"
+                id="folderInput"
+                webkitdirectory
+                directory
+                hidden>
+
+            <input
+                type="file"
+                id="zipInput"
+                accept=".zip"
+                hidden>
+
+            <hr>
+
+            <div
+                id="fileList"
+                class="border rounded p-3 mb-3"
+                style="height:180px;overflow:auto">
+
+                No Files Selected
+
+            </div>
+
+            <button
+                id="uploadBtn"
+                class="btn btn-danger w-100">
+
+                ▶ Start Processing
+
+            </button>
+
+            <hr>
+
+            <h5>Status</h5>
+
+            <div id="status">Waiting...</div>
+
+            <br>
+
+            <h6>Current File</h6>
+
+            <div id="currentFile">-</div>
+
+            <br>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    Files Processed
+
+                    <div id="processedFiles">
+                        0 / 0
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    Elapsed Time
+
+                    <div id="elapsed">
+                        00:00:00
+                    </div>
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <div class="progress" style="height:30px">
+
+                <div
+                    id="progressBar"
+                    class="progress-bar progress-bar-striped progress-bar-animated"
+                    style="width:0%">
+
+                    0%
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <div class="card">
+
+                        <div class="card-body text-center">
+
+                            <h6>Rows</h6>
+
+                            <h3 id="rows">
+
+                                0
+
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="card">
+
+                        <div class="card-body text-center">
+
+                            <h6>Unique</h6>
+
+                            <h3 id="unique">
+
+                                0
+
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="card">
+
+                        <div class="card-body text-center">
+
+                            <h6>Duplicates</h6>
+
+                            <h3 id="duplicates">
+
+                                0
+
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <h5>Live Log</h5>
+
+            <div
+                id="logs"
+                class="border rounded p-3"
+                style="height:200px;overflow:auto">
+
+            </div>
+
+            <br>
+
+            <button
+                id="downloadBtn"
+                class="btn btn-success w-100"
+                style="display:none">
+
+                ⬇ Download Output
+
+            </button>
+
+            <div style="font-size:10px;color:#aaa;text-align:center;margin-top:8px;">
+                build: no-autodownload-fix-001
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/static/script.js?v={{ script_version }}"></script>
+
+</body>
+
+</html>

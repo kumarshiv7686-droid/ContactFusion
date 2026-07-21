@@ -1,0 +1,146 @@
+/* =======================================
+   ContactFusion 
+======================================= */
+
+body {
+    background: #f4f6f9;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+.progress {
+    height: 30px;
+    border-radius: 20px;
+    background: #e9ecef;
+}
+
+.progress-bar {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 30px;
+}
+
+#fileList {
+    background: white;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+#logs {
+    background: #111827;
+    color: #00ff7f;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
+}
+
+.stat-card h6 {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+#status {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+#currentFile {
+    color: #198754;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+#downloadBtn {
+    display: none;
+}
+
+.file-item {
+    padding: 5px 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-item:hover {
+    background: #f8f9fa;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bdbdbd;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #8c8c8c;
+}
+
+@media (max-width: 768px) {
+
+    .container {
+        padding: 15px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .btn {
+        margin-bottom: 10px;
+    }
+
+    .progress {
+        height: 24px;
+    }
+
+    .progress-bar {
+        line-height: 24px;
+        font-size: 12px;
+    }
+
+    #logs {
+        height: 180px !important;
+    }
+
+    #fileList {
+        height: 150px !important;
+    }
+}
