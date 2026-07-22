@@ -1,265 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ContactFusion v2.0</title>
 
-    <meta charset="UTF-8">
-    <title>ContactFusion v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="/static/style.css">
-
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/animations.css">
+<link rel="stylesheet" href="/static/css/responsive.css">
 </head>
+<body data-theme="dark">
 
-<body>
+<div class="app-shell" id="appShell">
 
-<div class="container py-5">
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <div class="card shadow-lg">
-
-        <div class="card-header bg-primary text-white">
-
-            <h3 class="mb-0">
-                📞 ContactFusion v1.0
-            </h3>
-
-        </div>
-
-        <div class="card-body">
-
-            <div class="row">
-
-                <div class="col-md-4">
-
-                    <button
-                        class="btn btn-primary w-100 mb-2"
-                        id="chooseBtn">
-
-                        Select Files
-
-                    </button>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <button
-                        class="btn btn-success w-100 mb-2"
-                        id="folderBtn">
-
-                        Select Folder
-
-                    </button>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <button
-                        class="btn btn-warning w-100 mb-2"
-                        id="zipBtn">
-
-                        Select ZIP
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <input
-                type="file"
-                id="fileInput"
-                multiple
-                hidden>
-
-            <input
-                type="file"
-                id="folderInput"
-                webkitdirectory
-                directory
-                hidden>
-
-            <input
-                type="file"
-                id="zipInput"
-                accept=".zip"
-                hidden>
-
-            <hr>
-
-            <div
-                id="fileList"
-                class="border rounded p-3 mb-3"
-                style="height:180px;overflow:auto">
-
-                No Files Selected
-
-            </div>
-
-            <button
-                id="uploadBtn"
-                class="btn btn-danger w-100">
-
-                ▶ Start Processing
-
-            </button>
-
-            <hr>
-
-            <h5>Status</h5>
-
-            <div id="status">Waiting...</div>
-
-            <br>
-
-            <h6>Current File</h6>
-
-            <div id="currentFile">-</div>
-
-            <br>
-
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    Files Processed
-
-                    <div id="processedFiles">
-                        0 / 0
-                    </div>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    Elapsed Time
-
-                    <div id="elapsed">
-                        00:00:00
-                    </div>
-
-                </div>
-
-            </div>
-
-            <br>
-
-            <div class="progress" style="height:30px">
-
-                <div
-                    id="progressBar"
-                    class="progress-bar progress-bar-striped progress-bar-animated"
-                    style="width:0%">
-
-                    0%
-
-                </div>
-
-            </div>
-
-            <br>
-
-            <div class="row">
-
-                <div class="col-md-4">
-
-                    <div class="card">
-
-                        <div class="card-body text-center">
-
-                            <h6>Rows</h6>
-
-                            <h3 id="rows">
-
-                                0
-
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <div class="card">
-
-                        <div class="card-body text-center">
-
-                            <h6>Unique</h6>
-
-                            <h3 id="unique">
-
-                                0
-
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <div class="card">
-
-                        <div class="card-body text-center">
-
-                            <h6>Duplicates</h6>
-
-                            <h3 id="duplicates">
-
-                                0
-
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <br>
-
-            <h5>Live Log</h5>
-
-            <div
-                id="logs"
-                class="border rounded p-3"
-                style="height:200px;overflow:auto">
-
-            </div>
-
-            <br>
-
-            <button
-                id="downloadBtn"
-                class="btn btn-success w-100"
-                style="display:none">
-
-                ⬇ Download Output
-
-            </button>
-
-            <div style="font-size:10px;color:#aaa;text-align:center;margin-top:8px;">
-                build: no-autodownload-fix-001
-            </div>
-
-        </div>
-
+  <!-- ============== SIDEBAR ============== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="fusion-mark" aria-hidden="true"><span></span><span></span></div>
+      <div class="brand-name">ContactFusion<small>v2.0 Dashboard</small></div>
     </div>
 
+    <nav class="sidebar-nav" aria-label="Primary">
+      <button class="nav-item active" type="button"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></button>
+      <button class="nav-item" type="button" onclick="document.getElementById('uploadPanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-cloud-arrow-up-fill"></i><span>Upload</span></button>
+      <button class="nav-item" type="button" onclick="document.getElementById('consolePanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-terminal-fill"></i><span>Console</span></button>
+      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-clock-history"></i><span>History</span></button>
+      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-gear-fill"></i><span>Settings</span></button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <span class="build-tag">build 2.0.0</span>
+      <button class="sidebar-collapse-btn desktop-collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============== MAIN ============== -->
+  <div class="main">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><i class="bi bi-list"></i></button>
+        <h1>Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="status-pill is-idle" id="statusPill">
+          <span class="status-dot"></span>
+          <span class="status-text-full" id="statusPillText">Idle</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ---- Stat cards ---- -->
+      <section class="content-section">
+        <p class="section-label"><i class="bi bi-bar-chart-fill"></i> Overview</p>
+        <div class="stat-grid">
+
+          <div class="stat-card" style="--stat-color:#2FE6C4">
+            <div class="stat-icon"><i class="bi bi-table"></i></div>
+            <div class="stat-value" id="rows">0</div>
+            <div class="stat-label">Total Rows</div>
+          </div>
+
+          <div class="stat-card" style="--stat-color:#8B7CF6">
+            <div class="stat-icon"><i class="bi bi-person-check-fill"></i></div>
+            <div class="stat-value" id="unique">0</div>
+            <div class="stat-label">Unique Contacts</div>
+          </div>
+
+          <div class="stat-card" style="--stat-color:#F5A93F">
+            <div class="stat-icon"><i class="bi bi-files"></i></div>
+            <div class="stat-value" id="duplicates">0</div>
+            <div class="stat-label">Duplicate Contacts</div>
+          </div>
+
+          <div class="stat-card" style="--stat-color:#2FE6C4">
+            <div class="stat-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
+            <div class="stat-value" id="processedFilesStat">0 / 0</div>
+            <div class="stat-label">Files Processed</div>
+          </div>
+
+          <div class="stat-card" style="--stat-color:#8B7CF6">
+            <div class="stat-icon"><i class="bi bi-speedometer2"></i></div>
+            <div class="stat-value" id="speedStat">&mdash;</div>
+            <div class="stat-label">Processing Speed</div>
+          </div>
+
+          <div class="stat-card" style="--stat-color:#F5A93F">
+            <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div class="stat-value" id="etaStat">&mdash;</div>
+            <div class="stat-label">Est. Time Remaining</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ---- Upload + Processing ---- -->
+      <section class="content-section panel-row">
+
+        <div class="panel" id="uploadPanel">
+          <div class="panel-head">
+            <h2><i class="bi bi-cloud-arrow-up-fill"></i> Upload Workspace</h2>
+          </div>
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drag and drop files here, or click Add Files">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <p><strong>Drag & drop</strong> files or folders here</p>
+            <p>or use the buttons below &middot; .xlsx .xls .xlsm .xlsb .csv .zip</p>
+          </div>
+
+          <input type="file" id="fileInput" multiple hidden>
+          <input type="file" id="folderInput" webkitdirectory directory hidden>
+          <input type="file" id="zipInput" accept=".zip" hidden>
+
+          <div class="upload-actions">
+            <button class="btn btn-outline" id="chooseBtn" type="button"><i class="bi bi-file-earmark-plus"></i> Add Files</button>
+            <button class="btn btn-outline" id="folderBtn" type="button"><i class="bi bi-folder-plus"></i> Add Folder</button>
+            <button class="btn btn-outline" id="zipBtn" type="button"><i class="bi bi-file-earmark-zip"></i> Import ZIP</button>
+          </div>
+
+          <div class="file-list is-empty" id="fileList"></div>
+
+          <div class="validation-msg" id="validationMsg">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span id="validationMsgText"></span>
+          </div>
+
+          <div class="upload-footer">
+            <button class="btn btn-primary btn-block btn-lg" id="uploadBtn" type="button">
+              <i class="bi bi-play-fill"></i> Start Processing
+            </button>
+          </div>
+        </div>
+
+        <div class="panel" id="processingPanel">
+          <div class="panel-head">
+            <h2><i class="bi bi-cpu-fill"></i> Processing</h2>
+          </div>
+
+          <div class="proc-status-line">
+            <span>Status</span>
+            <span id="status">Waiting...</span>
+          </div>
+
+          <div class="proc-current">
+            <span id="currentFile">No file in progress</span>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="progressBar" style="width:0%">0%</div>
+          </div>
+
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <div class="lbl">Files Processed</div>
+              <div class="val" id="processedFiles">0 / 0</div>
+            </div>
+            <div class="mini-stat">
+              <div class="lbl">Elapsed Time</div>
+              <div class="val" id="elapsed">00:00:00</div>
+            </div>
+          </div>
+
+          <div class="proc-controls">
+            <button class="btn btn-ghost" id="pauseBtn" type="button" disabled title="Pause — coming soon">
+              <i class="bi bi-pause-fill"></i> Pause
+            </button>
+            <button class="btn btn-ghost" id="resumeBtn" type="button" disabled title="Resume — coming soon">
+              <i class="bi bi-play-fill"></i> Resume
+            </button>
+          </div>
+
+          <button class="btn btn-success btn-block btn-lg" id="downloadBtn" type="button" style="display:none;margin-top:14px;">
+            <i class="bi bi-download"></i> Download Output
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ---- Console ---- -->
+      <section class="content-section">
+        <div class="panel console-panel" id="consolePanel">
+          <div class="console-chrome">
+            <div class="console-title">
+              <div class="traffic"><span></span><span></span><span></span></div>
+              <h2>live-log &mdash; contactfusion</h2>
+            </div>
+            <div class="console-actions">
+              <button class="icon-btn is-active" id="autoScrollBtn" type="button" title="Auto-scroll: on"><i class="bi bi-arrow-down-circle"></i></button>
+              <button class="icon-btn" id="copyLogsBtn" type="button" title="Copy logs"><i class="bi bi-clipboard"></i></button>
+              <button class="icon-btn" id="clearLogsBtn" type="button" title="Clear logs"><i class="bi bi-trash3"></i></button>
+            </div>
+          </div>
+          <div id="logs"><div class="console-empty">Logs will appear here once processing starts&hellip;</div></div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      ContactFusion &middot; frontend redesign &middot; <span class="build-tag">no-autodownload-fix-001</span>
+    </footer>
+
+  </div>
 </div>
 
+<div class="toast-stack" id="toastStack"></div>
+
 <script src="/static/script.js?v={{ script_version }}"></script>
-
 </body>
-
 </html>
