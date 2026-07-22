@@ -41,7 +41,6 @@ Designed for businesses handling large customer databases, ContactFusion automat
 
 ### Processing
 
-## Processing
 
 ![Processing](screenshots/progress.png)
 
