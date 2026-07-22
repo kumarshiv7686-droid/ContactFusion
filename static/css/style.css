@@ -299,6 +299,10 @@ button{ font-family:inherit; }
 .btn-success{ background:linear-gradient(135deg,#2FE6C4,#22C08A); color:#04231D; }
 .btn-success:hover{ filter:brightness(1.05); }
 
+.download-area{ display:flex; flex-direction:column; gap:8px; }
+.download-area a.btn{ text-decoration:none; }
+.download-area .file-tag{ opacity:.75; font-weight:400; font-size:11.5px; font-family:var(--font-mono); margin-left:4px; }
+
 /* ---- File list ---- */
 .file-list{
   max-height:170px; overflow-y:auto; margin-top:14px; border-radius:var(--radius-sm);

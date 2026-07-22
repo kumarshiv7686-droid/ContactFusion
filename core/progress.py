@@ -16,6 +16,7 @@ progress = {
     "start_time": None,
     "elapsed": "00:00:00",
     "output_file": "",
+    "output_files": [],
     "logs": []
 }
 
@@ -35,6 +36,7 @@ def reset():
             "start_time": None,
             "elapsed": "00:00:00",
             "output_file": "",
+            "output_files": [],
             "logs": []
         })
 
@@ -80,12 +82,17 @@ def file_completed():
             progress["elapsed"] = f"{h:02}:{m:02}:{s:02}"
 
 
-def complete(output_file):
+def complete(output_files):
     with _lock:
+        if isinstance(output_files, str):
+            output_files = [output_files]
+        output_files = list(output_files or [])
+
         progress["status"] = "completed"
         progress["message"] = "Completed"
         progress["progress"] = 100
-        progress["output_file"] = output_file
+        progress["output_files"] = output_files
+        progress["output_file"] = output_files[0] if output_files else ""
         progress["logs"].append("Finished Successfully")
 
 

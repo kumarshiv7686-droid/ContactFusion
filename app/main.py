@@ -150,11 +150,13 @@ async def get_progress():
 # Download Output
 # ==========================================================
 @app.get("/download")
-async def download_output():
+async def download_output(file: str = None):
 
-    output = progress.get("output_file")
+    output_files = progress.get("output_files") or []
+    if not output_files and progress.get("output_file"):
+        output_files = [progress["output_file"]]
 
-    if not output:
+    if not output_files:
         return JSONResponse(
             {
                 "success": False,
@@ -163,7 +165,26 @@ async def download_output():
             status_code=404
         )
 
-    if not os.path.exists(output):
+    if file:
+        # Only ever match against known output paths (by basename) so a
+        # caller can't request an arbitrary path on disk.
+        requested_name = os.path.basename(file)
+        target = next(
+            (f for f in output_files if os.path.basename(f) == requested_name),
+            None
+        )
+        if not target:
+            return JSONResponse(
+                {
+                    "success": False,
+                    "message": "Requested output file not found."
+                },
+                status_code=404
+            )
+    else:
+        target = output_files[0]
+
+    if not os.path.exists(target):
         return JSONResponse(
             {
                 "success": False,
@@ -173,8 +194,8 @@ async def download_output():
         )
 
     return FileResponse(
-        path=output,
-        filename=os.path.basename(output),
+        path=target,
+        filename=os.path.basename(target),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 

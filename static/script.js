@@ -275,6 +275,7 @@ uploadBtn.onclick = async function () {
 
   uploadBtn.innerHTML = `<i class="bi bi-cpu-fill"></i> Processing...`;
   downloadBtn.style.display = "none";
+  downloadBtn.innerHTML = "";
   clearedLogCount = 0;
   lastRowsProcessed = 0;
   toast("Processing started.", "success");
@@ -368,13 +369,20 @@ async function loadProgress() {
 
   // Completed
   if ((p.status || "").toLowerCase() === "completed") {
-    const btn = document.getElementById("downloadBtn");
-    btn.style.display = "flex";
+    const files = (p.output_files && p.output_files.length)
+      ? p.output_files
+      : (p.output_file ? [p.output_file] : []);
+    renderDownloads(files);
 
     uploadBtn.disabled = false;
     uploadBtn.innerHTML = `<i class="bi bi-play-fill"></i> Start Processing`;
     clearInterval(timer);
-    toast("Processing completed. Output is ready to download.", "success");
+
+    if (files.length > 1) {
+      toast(`Processing completed — output split into ${files.length} parts.`, "success");
+    } else {
+      toast("Processing completed. Output is ready to download.", "success");
+    }
   }
 
   // Failed
@@ -469,11 +477,32 @@ copyLogsBtn.onclick = async () => {
 };
 
 /* =========================================================
-   Download
+   Download (supports one or many output parts)
    ========================================================= */
-downloadBtn.onclick = function () {
-  window.location = "/download";
-};
+function fileBaseName(path) {
+  return String(path).split(/[\\/]/).pop();
+}
+
+function renderDownloads(files) {
+  if (!files || files.length === 0) {
+    downloadBtn.innerHTML = "";
+    downloadBtn.style.display = "none";
+    return;
+  }
+
+  let html = "";
+  files.forEach((path, i) => {
+    const name = fileBaseName(path);
+    const label = files.length > 1 ? `Download Part ${i + 1} of ${files.length}` : "Download Output";
+    html += `
+      <a class="btn btn-success btn-block btn-lg" href="/download?file=${encodeURIComponent(name)}" download>
+        <i class="bi bi-download"></i> ${label}<span class="file-tag">${escapeHtml(name)}</span>
+      </a>`;
+  });
+
+  downloadBtn.innerHTML = html;
+  downloadBtn.style.display = "flex";
+}
 
 /* =========================================================
    Init

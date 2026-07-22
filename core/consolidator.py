@@ -431,8 +431,8 @@ def consolidate(source_folder, output_folder):
             break
 
     if outputs:
-        progress.complete(outputs[0])
-    return outputs[0]
+        progress.complete(outputs)
+    return outputs
 
 def _process_row(row, name_idx, num_idx, addr_idx, contacts) -> int:
     """Extract Name/Number/Address from one raw row and merge it into

@@ -23,18 +23,18 @@ def process_files():
             UPLOAD_FOLDER,
             OUTPUT_FOLDER
         )
-        if isinstance(output_files, list):
-            output_file = output_files[0]
-        else:
-             output_file = output_files    
 
-        if output_file is None:
-            output_file = os.path.join(
+        if isinstance(output_files, str):
+            output_files = [output_files]
+        output_files = [f for f in (output_files or []) if f]
+
+        if not output_files:
+            output_files = [os.path.join(
                 OUTPUT_FOLDER,
                 "Merged_Output.xlsx"
-            )
+            )]
 
-        progress.complete(output_file)
+        progress.complete(output_files)
 
     except Exception as e:
         progress.failed(str(e))
