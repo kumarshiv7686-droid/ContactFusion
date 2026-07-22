@@ -35,29 +35,18 @@ Designed for businesses handling large customer databases, ContactFusion automat
 
 ## 🖼️ Screenshots
 
-### Home Page
+## Home Page
 
-> Add screenshot here
-
-```
-screenshots/home.png
-```
+![Home Page](screenshots/home.png)
 
 ### Processing
 
-> Add screenshot here
 
-```
-screenshots/progress.png
-```
+![Processing](screenshots/progress.png)
 
 ### Download
 
-> Add screenshot here
-
-```
-screenshots/download.png
-```
+![Download](screenshots/image.png)
 
 ---
 
