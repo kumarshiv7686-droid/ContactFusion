@@ -46,11 +46,7 @@ Designed for businesses handling large customer databases, ContactFusion automat
 
 ### Download
 
-> Add screenshot here
-
-```
-screenshots/download.png
-```
+![Download](screenshots/image.png)
 
 ---
 
