@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ContactFusion v2.0</title>
+<title>ContactFusion</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -12,207 +12,243 @@
 <link rel="stylesheet" href="/static/css/animations.css">
 <link rel="stylesheet" href="/static/css/responsive.css">
 </head>
-<body data-theme="dark">
+<body data-theme="light">
 
-<div class="app-shell" id="appShell">
-
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-  <!-- ============== SIDEBAR ============== -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-head">
-      <div class="fusion-mark" aria-hidden="true"><span></span><span></span></div>
-      <div class="brand-name">ContactFusion<small>v2.0 Dashboard</small></div>
+<!-- ============== Desktop header ============== -->
+<header class="app-header desktop-header">
+  <div class="header-brand">
+    <div class="brand-mark"><i class="bi bi-telephone-fill"></i></div>
+    <div>
+      <div class="brand-text-row">
+        <span class="brand-title">ContactFusion</span>
+        <span class="brand-badge">v2.0</span>
+      </div>
+      <div class="brand-tagline">Fast Contact Extraction &amp; Duplicate Removal</div>
     </div>
+  </div>
+  <div class="header-actions">
+    <button class="theme-switch" id="themeToggle" aria-label="Toggle dark mode">
+      <i class="bi bi-sun-fill"></i><i class="bi bi-moon-stars-fill"></i>
+      <span class="knob"></span>
+    </button>
+    <button class="icon-btn-plain" type="button" title="Settings" disabled><i class="bi bi-gear-fill"></i></button>
+  </div>
+</header>
 
+<!-- ============== Mobile header ============== -->
+<header class="mobile-header">
+  <div class="mh-left">
+    <div class="brand-mark"><i class="bi bi-telephone-fill"></i></div>
+    <div class="brand-text-row">
+      <span class="brand-title">ContactFusion</span>
+      <span class="brand-badge">v2.0</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="theme-switch" id="themeToggleMobile" aria-label="Toggle dark mode">
+      <i class="bi bi-sun-fill"></i><i class="bi bi-moon-stars-fill"></i>
+      <span class="knob"></span>
+    </button>
+  </div>
+</header>
+
+<div class="body-layout">
+
+  <!-- ============== Sidebar (desktop) ============== -->
+  <aside class="sidebar">
     <nav class="sidebar-nav" aria-label="Primary">
-      <button class="nav-item active" type="button"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></button>
-      <button class="nav-item" type="button" onclick="document.getElementById('uploadPanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-cloud-arrow-up-fill"></i><span>Upload</span></button>
-      <button class="nav-item" type="button" onclick="document.getElementById('consolePanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-terminal-fill"></i><span>Console</span></button>
-      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-clock-history"></i><span>History</span></button>
-      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-gear-fill"></i><span>Settings</span></button>
+      <button class="nav-item active" type="button"><i class="bi bi-house-fill"></i>Dashboard</button>
+      <button class="nav-item" type="button" onclick="document.getElementById('uploadPanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-file-earmark-text-fill"></i>Files</button>
+      <button class="nav-item" type="button" onclick="document.getElementById('processingPanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-hourglass-split"></i>Processing</button>
+      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-clock-history"></i>History</button>
+      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-bar-chart-fill"></i>Reports</button>
+      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-gear-fill"></i>Settings</button>
+      <button class="nav-item disabled" type="button" disabled title="Coming soon"><i class="bi bi-question-circle-fill"></i>Help</button>
     </nav>
 
+    <div class="sidebar-widgets">
+      <div class="help-card">
+        <i class="bi bi-life-preserver big-icon"></i>
+        <div class="h-title">Need Help?</div>
+        <span class="h-link">Check the README &gt;</span>
+      </div>
+
+      <div class="storage-card">
+        <div class="s-label">Selected Batch</div>
+        <div class="s-value" id="batchSummary">0 files &middot; 0 B</div>
+        <div class="storage-track"><div class="storage-fill" id="batchFill"></div></div>
+      </div>
+    </div>
+
     <div class="sidebar-foot">
-      <span class="build-tag">build 2.0.0</span>
-      <button class="sidebar-collapse-btn desktop-collapse-btn" id="collapseBtn" type="button" aria-label="Collapse sidebar">
-        <i class="bi bi-chevron-left"></i>
-      </button>
+      &copy; 2026 ContactFusion<br>All rights reserved
     </div>
   </aside>
 
-  <!-- ============== MAIN ============== -->
-  <div class="main">
+  <!-- ============== Main content ============== -->
+  <main class="main">
 
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><i class="bi bi-list"></i></button>
-        <h1>Dashboard</h1>
-      </div>
-      <div class="topbar-right">
-        <div class="status-pill is-idle" id="statusPill">
-          <span class="status-dot"></span>
-          <span class="status-text-full" id="statusPillText">Idle</span>
-        </div>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-          <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+    <!-- ---- Upload actions ---- -->
+    <section class="section-gap" id="uploadPanel">
+      <div class="upload-actions">
+        <button class="action-btn blue" id="chooseBtn" type="button">
+          <i class="bi bi-file-earmark-plus"></i>
+          <span><span class="a-title">Add Files</span><br><span class="a-sub">Select Excel / CSV files</span></span>
+        </button>
+        <button class="action-btn green" id="folderBtn" type="button">
+          <i class="bi bi-folder-plus"></i>
+          <span><span class="a-title">Add Folder</span><br><span class="a-sub">Scan folder for files</span></span>
+        </button>
+        <button class="action-btn purple" id="zipBtn" type="button">
+          <i class="bi bi-file-earmark-zip"></i>
+          <span><span class="a-title">Import ZIP</span><br><span class="a-sub">Import ZIP archive</span></span>
         </button>
       </div>
-    </header>
 
-    <main class="content">
+      <input type="file" id="fileInput" multiple hidden>
+      <input type="file" id="folderInput" webkitdirectory directory hidden>
+      <input type="file" id="zipInput" accept=".zip" hidden>
+
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drag and drop files here, or click to browse">
+        <i class="bi bi-cloud-arrow-up cloud-icon"></i>
+        <h3>Drag &amp; Drop Files Here</h3>
+        <span class="browse-link">or click to browse</span>
+        <div class="supports">Supports: .xlsx &nbsp;.xls &nbsp;.csv &nbsp;.zip</div>
+      </div>
+
+      <div class="file-list is-empty" id="fileList"></div>
+
+      <div class="validation-msg" id="validationMsg">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span id="validationMsgText"></span>
+      </div>
+
+      <div class="upload-footer">
+        <button class="btn btn-primary" id="uploadBtn" type="button">
+          <i class="bi bi-play-fill"></i> Start Processing
+        </button>
+      </div>
 
       <!-- ---- Stat cards ---- -->
-      <section class="content-section">
-        <p class="section-label"><i class="bi bi-bar-chart-fill"></i> Overview</p>
-        <div class="stat-grid">
-
-          <div class="stat-card" style="--stat-color:#2FE6C4">
-            <div class="stat-icon"><i class="bi bi-table"></i></div>
-            <div class="stat-value" id="rows">0</div>
-            <div class="stat-label">Total Rows</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color:#8B7CF6">
-            <div class="stat-icon"><i class="bi bi-person-check-fill"></i></div>
-            <div class="stat-value" id="unique">0</div>
-            <div class="stat-label">Unique Contacts</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color:#F5A93F">
-            <div class="stat-icon"><i class="bi bi-files"></i></div>
-            <div class="stat-value" id="duplicates">0</div>
-            <div class="stat-label">Duplicate Contacts</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color:#2FE6C4">
-            <div class="stat-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
-            <div class="stat-value" id="processedFilesStat">0 / 0</div>
-            <div class="stat-label">Files Processed</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color:#8B7CF6">
-            <div class="stat-icon"><i class="bi bi-speedometer2"></i></div>
-            <div class="stat-value" id="speedStat">&mdash;</div>
-            <div class="stat-label">Processing Speed</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color:#F5A93F">
-            <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
-            <div class="stat-value" id="etaStat">&mdash;</div>
-            <div class="stat-label">Est. Time Remaining</div>
-          </div>
-
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="bi bi-file-earmark-fill"></i></div>
+          <div class="stat-value" id="processedFilesStat">0</div>
+          <div class="stat-label">Files</div>
+          <span class="stat-link blue">Processed &gt;</span>
         </div>
-      </section>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="bi bi-table"></i></div>
+          <div class="stat-value" id="rows">0</div>
+          <div class="stat-label">Rows</div>
+          <span class="stat-link green">Scanned &gt;</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple"><i class="bi bi-person-check-fill"></i></div>
+          <div class="stat-value" id="unique">0</div>
+          <div class="stat-label">Unique</div>
+          <span class="stat-link purple">Contacts &gt;</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red"><i class="bi bi-files"></i></div>
+          <div class="stat-value" id="duplicates">0</div>
+          <div class="stat-label">Duplicate</div>
+          <span class="stat-link red">Removed &gt;</span>
+        </div>
+      </div>
+    </section>
 
-      <!-- ---- Upload + Processing ---- -->
-      <section class="content-section panel-row">
+    <!-- ---- Processing panel ---- -->
+    <section class="section-gap" id="processingPanel">
+      <div class="panel">
+        <div class="proc-head">
+          <h2 id="status">Waiting...</h2>
+          <span class="proc-pct" id="progressPct">0%</span>
+        </div>
 
-        <div class="panel" id="uploadPanel">
-          <div class="panel-head">
-            <h2><i class="bi bi-cloud-arrow-up-fill"></i> Upload Workspace</h2>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar" style="width:0%"></div>
+        </div>
+
+        <div class="proc-meta">
+          <div class="m-item">
+            <span class="m-lbl">Current File</span>
+            <span class="m-val" id="currentFile">No file in progress</span>
           </div>
-
-          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drag and drop files here, or click Add Files">
-            <i class="bi bi-cloud-arrow-up"></i>
-            <p><strong>Drag & drop</strong> files or folders here</p>
-            <p>or use the buttons below &middot; .xlsx .xls .xlsm .xlsb .csv .zip</p>
+          <div class="m-item">
+            <span class="m-lbl">Elapsed</span>
+            <span class="m-val" id="elapsed">00:00:00</span>
           </div>
-
-          <input type="file" id="fileInput" multiple hidden>
-          <input type="file" id="folderInput" webkitdirectory directory hidden>
-          <input type="file" id="zipInput" accept=".zip" hidden>
-
-          <div class="upload-actions">
-            <button class="btn btn-outline" id="chooseBtn" type="button"><i class="bi bi-file-earmark-plus"></i> Add Files</button>
-            <button class="btn btn-outline" id="folderBtn" type="button"><i class="bi bi-folder-plus"></i> Add Folder</button>
-            <button class="btn btn-outline" id="zipBtn" type="button"><i class="bi bi-file-earmark-zip"></i> Import ZIP</button>
+          <div class="m-item">
+            <span class="m-lbl">Remaining</span>
+            <span class="m-val" id="etaStat">&mdash;</span>
           </div>
-
-          <div class="file-list is-empty" id="fileList"></div>
-
-          <div class="validation-msg" id="validationMsg">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-            <span id="validationMsgText"></span>
+          <div class="m-item">
+            <span class="m-lbl">Speed</span>
+            <span class="m-val blue" id="speedStat">&mdash;</span>
           </div>
+          <div class="m-item">
+            <span class="m-lbl">Files</span>
+            <span class="m-val" id="processedFiles">0 / 0</span>
+          </div>
+        </div>
 
-          <div class="upload-footer">
-            <button class="btn btn-primary btn-block btn-lg" id="uploadBtn" type="button">
-              <i class="bi bi-play-fill"></i> Start Processing
+        <div class="proc-controls">
+          <button class="btn btn-start" id="startBtnMirror" type="button" onclick="document.getElementById('uploadBtn').click()">
+            <i class="bi bi-play-fill"></i> Start
+          </button>
+          <button class="btn btn-pause" id="pauseBtn" type="button" disabled title="Pause — coming soon">
+            <i class="bi bi-pause-fill"></i> Pause
+          </button>
+          <button class="btn btn-stop" id="stopBtn" type="button" disabled title="Stop — coming soon">
+            <i class="bi bi-stop-fill"></i> Stop
+          </button>
+        </div>
+
+        <div class="download-area" id="downloadBtn" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- ---- Console ---- -->
+    <section class="console-panel" id="consolePanel">
+      <div class="panel">
+        <div class="console-top">
+          <h2>Live Log</h2>
+          <div class="console-actions">
+            <button class="console-link-btn is-active" id="autoScrollBtn" type="button" title="Auto-scroll: on">
+              <i class="bi bi-arrow-down-circle"></i> Auto-scroll
+            </button>
+            <button class="console-link-btn is-muted" id="copyLogsBtn" type="button">
+              <i class="bi bi-clipboard"></i> Copy
+            </button>
+            <button class="console-link-btn" id="clearLogsBtn" type="button">
+              <i class="bi bi-trash3"></i> Clear Log
             </button>
           </div>
         </div>
+        <div id="logs"><div class="console-empty">Logs will appear here once processing starts&hellip;</div></div>
+      </div>
+    </section>
 
-        <div class="panel" id="processingPanel">
-          <div class="panel-head">
-            <h2><i class="bi bi-cpu-fill"></i> Processing</h2>
-          </div>
+    <!-- ---- Feature strip ---- -->
+    <div class="feature-strip">
+      <div class="feature-item"><i class="bi bi-lightning-charge-fill" style="color:var(--blue)"></i><div><div class="f-title">Fast Processing</div><div class="f-sub">Optimized for speed</div></div></div>
+      <div class="feature-item"><i class="bi bi-bullseye" style="color:var(--purple)"></i><div><div class="f-title">Accurate Results</div><div class="f-sub">High accuracy output</div></div></div>
+      <div class="feature-item"><i class="bi bi-check2-square" style="color:var(--green)"></i><div><div class="f-title">Duplicate Removal</div><div class="f-sub">Smart duplicate detection</div></div></div>
+      <div class="feature-item"><i class="bi bi-layers-fill" style="color:var(--blue)"></i><div><div class="f-title">Multiple Formats</div><div class="f-sub">Excel, CSV, ZIP support</div></div></div>
+      <div class="feature-item"><i class="bi bi-shield-lock-fill" style="color:var(--amber)"></i><div><div class="f-title">Secure &amp; Private</div><div class="f-sub">Your data stays local</div></div></div>
+    </div>
 
-          <div class="proc-status-line">
-            <span>Status</span>
-            <span id="status">Waiting...</span>
-          </div>
-
-          <div class="proc-current">
-            <span id="currentFile">No file in progress</span>
-          </div>
-
-          <div class="progress-track">
-            <div class="progress-fill" id="progressBar" style="width:0%">0%</div>
-          </div>
-
-          <div class="mini-stats">
-            <div class="mini-stat">
-              <div class="lbl">Files Processed</div>
-              <div class="val" id="processedFiles">0 / 0</div>
-            </div>
-            <div class="mini-stat">
-              <div class="lbl">Elapsed Time</div>
-              <div class="val" id="elapsed">00:00:00</div>
-            </div>
-          </div>
-
-          <div class="proc-controls">
-            <button class="btn btn-ghost" id="pauseBtn" type="button" disabled title="Pause — coming soon">
-              <i class="bi bi-pause-fill"></i> Pause
-            </button>
-            <button class="btn btn-ghost" id="resumeBtn" type="button" disabled title="Resume — coming soon">
-              <i class="bi bi-play-fill"></i> Resume
-            </button>
-          </div>
-
-          <div class="download-area" id="downloadBtn" style="display:none;margin-top:14px;"></div>
-        </div>
-
-      </section>
-
-      <!-- ---- Console ---- -->
-      <section class="content-section">
-        <div class="panel console-panel" id="consolePanel">
-          <div class="console-chrome">
-            <div class="console-title">
-              <div class="traffic"><span></span><span></span><span></span></div>
-              <h2>live-log &mdash; contactfusion</h2>
-            </div>
-            <div class="console-actions">
-              <button class="icon-btn is-active" id="autoScrollBtn" type="button" title="Auto-scroll: on"><i class="bi bi-arrow-down-circle"></i></button>
-              <button class="icon-btn" id="copyLogsBtn" type="button" title="Copy logs"><i class="bi bi-clipboard"></i></button>
-              <button class="icon-btn" id="clearLogsBtn" type="button" title="Clear logs"><i class="bi bi-trash3"></i></button>
-            </div>
-          </div>
-          <div id="logs"><div class="console-empty">Logs will appear here once processing starts&hellip;</div></div>
-        </div>
-      </section>
-
-    </main>
-
-    <footer class="app-footer">
-      ContactFusion &middot;  &middot; <span class="build-tag">Build By SHIV KUMAR</span>
-    </footer>
-
-  </div>
+  </main>
 </div>
+
+<!-- ============== Mobile bottom tab bar ============== -->
+<nav class="tab-bar" aria-label="Primary mobile">
+  <button class="tab-item active" type="button"><i class="bi bi-house-fill"></i>Dashboard</button>
+  <button class="tab-item" type="button" onclick="document.getElementById('uploadPanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-file-earmark-text-fill"></i>Files</button>
+  <button class="tab-item" type="button" onclick="document.getElementById('consolePanel').scrollIntoView({behavior:'smooth'})"><i class="bi bi-clock-history"></i>History</button>
+  <button class="tab-item" type="button" disabled title="Coming soon"><i class="bi bi-gear-fill"></i>Settings</button>
+</nav>
 
 <div class="toast-stack" id="toastStack"></div>
 

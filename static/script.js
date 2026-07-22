@@ -1,13 +1,14 @@
-console.log("SCRIPT BUILD: contactfusion-dashboard-v2");
+console.log("SCRIPT BUILD: contactfusion-light-dashboard-v3");
 
 /* =========================================================
    Supported file types (mirrors core/consolidator.py + .zip)
    ========================================================= */
 const SUPPORTED_EXTENSIONS = [".xlsx", ".xlsm", ".xls", ".xlsb", ".csv", ".zip"];
+const BATCH_FILL_CAP = 30; // purely decorative scale for the sidebar batch bar
 
-let selectedFiles = [];      // Array<File>
-let clearedLogCount = 0;     // logs before this index are hidden (local "clear")
-let userScrolledUp = false;  // console auto-scroll guard
+let selectedFiles = [];
+let clearedLogCount = 0;
+let userScrolledUp = false;
 let autoScrollEnabled = true;
 let lastRowsProcessed = 0;
 
@@ -23,15 +24,12 @@ const folderInput = document.getElementById("folderInput");
 const zipInput = document.getElementById("zipInput");
 
 const uploadBtn = document.getElementById("uploadBtn");
-const downloadBtn = document.getElementById("downloadBtn");
+const downloadBtn = document.getElementById("downloadBtn"); // container, not a plain button
 
 const fileList = document.getElementById("fileList");
 const dropzone = document.getElementById("dropzone");
 const validationMsg = document.getElementById("validationMsg");
 const validationMsgText = document.getElementById("validationMsgText");
-
-const statusPill = document.getElementById("statusPill");
-const statusPillText = document.getElementById("statusPillText");
 
 const logsEl = document.getElementById("logs");
 const autoScrollBtn = document.getElementById("autoScrollBtn");
@@ -39,6 +37,8 @@ const copyLogsBtn = document.getElementById("copyLogsBtn");
 const clearLogsBtn = document.getElementById("clearLogsBtn");
 
 const toastStack = document.getElementById("toastStack");
+const batchSummary = document.getElementById("batchSummary");
+const batchFill = document.getElementById("batchFill");
 
 /* =========================================================
    Toasts
@@ -64,47 +64,28 @@ function escapeHtml(str) {
 }
 
 /* =========================================================
-   Theme
+   Theme (desktop + mobile switches stay in sync)
    ========================================================= */
 const themeToggle = document.getElementById("themeToggle");
-const themeIcon = document.getElementById("themeIcon");
+const themeToggleMobile = document.getElementById("themeToggleMobile");
 
 function applyTheme(theme) {
   document.body.setAttribute("data-theme", theme);
-  themeIcon.className = theme === "light" ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
   localStorage.setItem("cf_theme", theme);
 }
 
 (function initTheme() {
   const saved = localStorage.getItem("cf_theme");
-  const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
-  applyTheme(saved || (prefersLight ? "light" : "dark"));
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(saved || (prefersDark ? "dark" : "light"));
 })();
 
-themeToggle.onclick = () => {
+function toggleTheme() {
   const current = document.body.getAttribute("data-theme");
-  applyTheme(current === "light" ? "dark" : "light");
-};
-
-/* =========================================================
-   Sidebar collapse / mobile nav
-   ========================================================= */
-const appShell = document.getElementById("appShell");
-const collapseBtn = document.getElementById("collapseBtn");
-const hamburgerBtn = document.getElementById("hamburgerBtn");
-const sidebarBackdrop = document.getElementById("sidebarBackdrop");
-
-collapseBtn.onclick = () => {
-  appShell.classList.toggle("collapsed");
-  localStorage.setItem("cf_sidebar_collapsed", appShell.classList.contains("collapsed") ? "1" : "0");
-};
-
-if (localStorage.getItem("cf_sidebar_collapsed") === "1") {
-  appShell.classList.add("collapsed");
+  applyTheme(current === "dark" ? "light" : "dark");
 }
-
-hamburgerBtn.onclick = () => appShell.classList.toggle("mobile-nav-open");
-sidebarBackdrop.onclick = () => appShell.classList.remove("mobile-nav-open");
+themeToggle.onclick = toggleTheme;
+if (themeToggleMobile) themeToggleMobile.onclick = toggleTheme;
 
 /* =========================================================
    Open pickers
@@ -119,16 +100,10 @@ dropzone.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preven
    Drag & drop
    ========================================================= */
 ["dragenter", "dragover"].forEach(evt => {
-  dropzone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropzone.classList.add("drag-over");
-  });
+  dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add("drag-over"); });
 });
 ["dragleave", "drop"].forEach(evt => {
-  dropzone.addEventListener(evt, (e) => {
-    e.preventDefault();
-    dropzone.classList.remove("drag-over");
-  });
+  dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove("drag-over"); });
 });
 dropzone.addEventListener("drop", (e) => {
   const dropped = [...(e.dataTransfer.files || [])];
@@ -178,9 +153,11 @@ function formatSize(bytes) {
 }
 
 /* =========================================================
-   Render file list + validation
+   Render file list + validation + sidebar batch summary
    ========================================================= */
 function renderFiles() {
+  updateBatchSummary();
+
   if (selectedFiles.length === 0) {
     fileList.innerHTML = "";
     fileList.classList.add("is-empty");
@@ -219,20 +196,11 @@ function renderFiles() {
   }
 }
 
-/* =========================================================
-   Status pill
-   ========================================================= */
-function setStatusPill(status) {
-  const map = {
-    idle: { cls: "is-idle", label: "Idle" },
-    running: { cls: "is-running", label: "Processing" },
-    completed: { cls: "is-completed", label: "Completed" },
-    failed: { cls: "is-failed", label: "Failed" }
-  };
-  const key = (status || "idle").toLowerCase();
-  const m = map[key] || map.idle;
-  statusPill.className = `status-pill ${m.cls}`;
-  statusPillText.textContent = m.label;
+function updateBatchSummary() {
+  const totalBytes = selectedFiles.reduce((sum, f) => sum + f.size, 0);
+  batchSummary.textContent = `${selectedFiles.length} file${selectedFiles.length === 1 ? "" : "s"} \u00b7 ${formatSize(totalBytes)}`;
+  const pct = Math.min(100, Math.round((selectedFiles.length / BATCH_FILL_CAP) * 100));
+  batchFill.style.width = pct + "%";
 }
 
 /* =========================================================
@@ -313,10 +281,10 @@ async function loadProgress() {
     const response = await fetch("/progress");
     p = await response.json();
   } catch (err) {
-    return; // network hiccup — try again next tick
+    return;
   }
 
-  document.getElementById("status").innerHTML = p.status || "";
+  document.getElementById("status").innerHTML = p.message || p.status || "";
   document.getElementById("currentFile").innerHTML = p.current_file || "No file in progress";
 
   document.getElementById("processedFiles").innerHTML = `${p.processed_files} / ${p.total_files}`;
@@ -336,13 +304,12 @@ async function loadProgress() {
 
   document.getElementById("elapsed").innerHTML = p.elapsed;
 
-  // Derived stats: processing speed & ETA
   const elapsedSec = elapsedToSeconds(p.elapsed);
   const speedEl = document.getElementById("speedStat");
   const etaEl = document.getElementById("etaStat");
 
   if (elapsedSec > 0 && p.rows_processed > 0) {
-    speedEl.innerHTML = `${Math.round(p.rows_processed / elapsedSec)}<span style="font-size:12px;color:var(--text-faint)"> rows/s</span>`;
+    speedEl.innerHTML = `${Math.round(p.rows_processed / elapsedSec)} rows/s`;
   } else {
     speedEl.innerHTML = "&mdash;";
   }
@@ -350,24 +317,20 @@ async function loadProgress() {
   if (p.processed_files > 0 && p.total_files > p.processed_files && elapsedSec > 0) {
     const perFile = elapsedSec / p.processed_files;
     const remaining = Math.max(0, Math.round(perFile * (p.total_files - p.processed_files)));
-    const m = Math.floor(remaining / 60), s = remaining % 60;
-    etaEl.innerHTML = `${m}m ${s}s`;
+    const h = Math.floor(remaining / 3600), m = Math.floor((remaining % 3600) / 60), s = remaining % 60;
+    etaEl.innerHTML = `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
   } else if ((p.status || "").toLowerCase() === "completed") {
-    etaEl.innerHTML = "0m 0s";
+    etaEl.innerHTML = "00:00:00";
   } else {
     etaEl.innerHTML = "&mdash;";
   }
 
-  setStatusPill(p.status);
-
   let progress = p.progress || 0;
-  let bar = document.getElementById("progressBar");
-  bar.style.width = progress + "%";
-  bar.innerHTML = progress + "%";
+  document.getElementById("progressBar").style.width = progress + "%";
+  document.getElementById("progressPct").innerHTML = progress + "%";
 
   renderLogs(p.logs || []);
 
-  // Completed
   if ((p.status || "").toLowerCase() === "completed") {
     const files = (p.output_files && p.output_files.length)
       ? p.output_files
@@ -385,7 +348,6 @@ async function loadProgress() {
     }
   }
 
-  // Failed
   if ((p.status || "").toLowerCase() === "failed") {
     clearInterval(timer);
     uploadBtn.disabled = false;
@@ -405,12 +367,19 @@ function classifyLog(text) {
   return "info";
 }
 
+function iconForLevel(level) {
+  if (level === "success") return "bi-check-circle-fill";
+  if (level === "warn") return "bi-exclamation-triangle-fill";
+  if (level === "error") return "bi-x-circle-fill";
+  return "bi-info-circle-fill";
+}
+
 function nowTime() {
   const d = new Date();
   return d.toTimeString().slice(0, 8);
 }
 
-const logTimestamps = new Map(); // logIndex -> time string, so times don't shift on re-render
+const logTimestamps = new Map();
 
 function renderLogs(fullLogs) {
   const visible = fullLogs.slice(clearedLogCount);
@@ -426,9 +395,9 @@ function renderLogs(fullLogs) {
     if (!logTimestamps.has(idx)) logTimestamps.set(idx, nowTime());
     const level = classifyLog(line);
     html += `
-      <div class="log-line">
+      <div class="log-line ${level}">
         <span class="log-time">${logTimestamps.get(idx)}</span>
-        <span class="log-badge ${level}">${level}</span>
+        <i class="bi ${iconForLevel(level)}"></i>
         <span class="log-text">${escapeHtml(line)}</span>
       </div>`;
   });
@@ -448,6 +417,7 @@ logsEl.addEventListener("scroll", () => {
 autoScrollBtn.onclick = () => {
   autoScrollEnabled = !autoScrollEnabled;
   autoScrollBtn.classList.toggle("is-active", autoScrollEnabled);
+  autoScrollBtn.classList.toggle("is-muted", !autoScrollEnabled);
   autoScrollBtn.title = autoScrollEnabled ? "Auto-scroll: on" : "Auto-scroll: off";
   if (autoScrollEnabled) {
     userScrolledUp = false;
@@ -495,7 +465,7 @@ function renderDownloads(files) {
     const name = fileBaseName(path);
     const label = files.length > 1 ? `Download Part ${i + 1} of ${files.length}` : "Download Output";
     html += `
-      <a class="btn btn-success btn-block btn-lg" href="/download?file=${encodeURIComponent(name)}" download>
+      <a class="btn btn-block" href="/download?file=${encodeURIComponent(name)}" download>
         <i class="bi bi-download"></i> ${label}<span class="file-tag">${escapeHtml(name)}</span>
       </a>`;
   });

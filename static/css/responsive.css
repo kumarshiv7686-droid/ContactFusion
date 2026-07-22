@@ -1,0 +1,62 @@
+/* ---- Laptop ---- */
+@media (max-width: 1180px){
+  .stat-grid{ grid-template-columns:repeat(2,1fr); }
+  .feature-strip{ grid-template-columns:repeat(3,1fr); }
+}
+
+/* ---- Tablet ---- */
+@media (max-width: 900px){
+  .sidebar{ display:none; }
+  .main{ padding:18px 18px 90px; }
+
+  .desktop-header{ display:none; }
+  .mobile-header{
+    display:flex; align-items:center; justify-content:space-between;
+    height:60px; padding:0 16px; background:var(--surface); border-bottom:1px solid var(--border);
+    position:sticky; top:0; z-index:50;
+  }
+  .mobile-header .mh-left{ display:flex; align-items:center; gap:11px; }
+  .mobile-header .brand-mark{ width:34px; height:34px; border-radius:10px; font-size:15px; }
+  .mobile-header .brand-title{ font-size:15px; }
+  .mobile-header .brand-badge{ font-size:10px; padding:1px 7px; }
+
+  .upload-actions{ grid-template-columns:1fr 1fr; }
+  .proc-controls{ grid-template-columns:1fr 1fr; }
+
+  /* Bottom tab bar replaces the sidebar nav on mobile */
+  .tab-bar{
+    display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60;
+    height:var(--tabbar-h); background:var(--surface); border-top:1px solid var(--border);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .tab-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    background:none; border:none; color:var(--text-faint); font-size:10.5px; font-weight:600; cursor:pointer;
+  }
+  .tab-item i{ font-size:19px; }
+  .tab-item.active{ color:var(--blue); }
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 560px){
+  .main{ padding:14px 14px 86px; }
+  .upload-actions{ grid-template-columns:1fr; }
+  .action-btn{ padding:14px 16px; }
+
+  .stat-grid{ grid-template-columns:1fr 1fr; gap:10px; }
+  .stat-card{ padding:13px; }
+  .stat-value{ font-size:19px; }
+
+  .proc-controls{ grid-template-columns:1fr; }
+  .proc-meta{ gap:14px; }
+
+  .feature-strip{ grid-template-columns:1fr 1fr; }
+
+  #logs{ height:190px; }
+
+  .toast-stack{ left:14px; right:14px; bottom:calc(var(--tabbar-h) + 14px); max-width:none; }
+
+  .dropzone{ padding:26px 14px; }
+}
+
+html, body{ overflow-x:hidden; max-width:100%; }
